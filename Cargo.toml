@@ -1,0 +1,8 @@
+[workspace]
+
+members = [
+    "packages/core/*",
+]
+default-members = [
+    "packages/core/kael",
+]
