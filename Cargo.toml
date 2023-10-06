@@ -2,6 +2,7 @@
 
 members = [
     "packages/core/*",
+    "packages/shared/*",
 ]
 default-members = [
     "packages/core/kael",

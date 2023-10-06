@@ -1,3 +1,5 @@
+mod cli;
+
 fn main() {
-    println!("Hello, world!");
+    cli::create_commander().get_matches();
 }
