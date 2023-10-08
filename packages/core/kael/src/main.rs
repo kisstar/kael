@@ -1,5 +1,8 @@
 mod cli;
+mod exec;
 
 fn main() {
-    cli::create_commander().get_matches();
+    let matches = cli::create_commander().get_matches();
+
+    exec::run(matches);
 }

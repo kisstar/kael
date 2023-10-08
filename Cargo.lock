@@ -88,8 +88,13 @@ name = "kael"
 version = "0.1.0"
 dependencies = [
  "clap",
+ "kael-bili",
  "kael-helpers",
 ]
+
+[[package]]
+name = "kael-bili"
+version = "0.1.0"
 
 [[package]]
 name = "kael-helpers"

@@ -1,10 +1,10 @@
-mod bilibili;
+mod bili;
 
 use clap::{crate_name, crate_version, Command};
 use kael_helpers::compose;
 
 fn register_commands(commander: Command) -> Command {
-    compose!(bilibili::register)(commander)
+    compose!(bili::register)(commander)
 }
 
 fn set_basic_info(commander: Command) -> Command {
