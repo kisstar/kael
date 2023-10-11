@@ -6,11 +6,22 @@ use std::{
     io::{prelude::*, SeekFrom},
 };
 
+type VideoInfo = crate::VideoInfo;
+
 const PLACEHOLDER_VALUE: u8 = 48; // ASCII
 const PLACEHOLDER_COUNT: usize = 9;
 
+pub fn ensure_output_dir(output: &str, video_info: &VideoInfo) {
+    let group_dir = format!("{}/{}", output, video_info.groupTitle);
+    let group_dir_path = Path::new(&group_dir);
+
+    if !group_dir_path.exists() {
+        create(group_dir, false).unwrap();
+    }
+}
+
 // read the file and remove the leading zero bytes
-pub fn calibrate_media_file(file_path: &str) {
+pub fn calibrate_media_file(file_path: &str) -> String {
     let mut data = vec![];
     let mut media_file = File::options()
         .read(true)
@@ -26,12 +37,16 @@ pub fn calibrate_media_file(file_path: &str) {
         .all(|&x| x == PLACEHOLDER_VALUE);
 
     if is_all_zero {
+        let temp_file_path = format!("{}{}", file_path, ".bak");
+        let mut temp_file = File::create(&temp_file_path).unwrap();
+
         media_file.seek(SeekFrom::Start(0)).unwrap();
-        media_file.write_all(&data[PLACEHOLDER_COUNT..]).unwrap();
+        temp_file.write_all(&data[PLACEHOLDER_COUNT..]).unwrap();
+        temp_file_path
+    } else {
+        String::from(file_path)
     }
 }
-
-type VideoInfo = crate::VideoInfo;
 
 // parsing JSON strings to obtain media information
 pub fn parse_video_info(file_path: &str) -> VideoInfo {
@@ -39,13 +54,4 @@ pub fn parse_video_info(file_path: &str) -> VideoInfo {
     let video_info: VideoInfo = serde_json::from_str(&json_string).unwrap();
 
     video_info
-}
-
-pub fn ensure_output_dir(output: &str, video_info: &VideoInfo) {
-    let group_dir = format!("{}/{}", output, video_info.groupTitle);
-    let group_dir_path = Path::new(&group_dir);
-
-    if !group_dir_path.exists() {
-        create(group_dir, false).unwrap();
-    }
 }

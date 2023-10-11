@@ -18,32 +18,32 @@ pub fn run(args: crate::Args) {
                 continue;
             }
 
-            let mut outter_video_info = None;
-            let mut media_file_paths = vec![];
+            let video_info_file = format!("{}/{}", media_dir, ".videoInfo");
+            let video_info = file::parse_video_info(&video_info_file);
             let media_dir_content = get_dir_content(media_dir).unwrap();
+            let mut media_file_paths = vec![];
+
+            // create a folder with a group name
+            if let Some(output) = args.output {
+                file::ensure_output_dir(output, &video_info);
+            }
 
             for file_path in media_dir_content.files {
-                if file_path.ends_with(".videoInfo") {
-                    let video_info = file::parse_video_info(&file_path);
+                if file_path.ends_with(".m4s") {
+                    let tmp_file = file::calibrate_media_file(&file_path);
 
-                    // create a folder with a group name
-                    if let Some(output) = args.output {
-                        file::ensure_output_dir(output, &video_info);
-                    }
-
-                    outter_video_info = Some(video_info);
-                } else if file_path.ends_with(".m4s") {
-                    file::calibrate_media_file(&file_path);
-                    media_file_paths.push(file_path);
+                    media_file_paths.push(tmp_file);
                 }
             }
 
-            match outter_video_info {
-                Some(video_info) => {
-                    cmd::merge(&media_file_paths, args.output.unwrap(), &video_info);
-                }
-                None => error!("No .videoInfo file found."),
-            }
+            cmd::merge(&media_file_paths, args.output.unwrap(), &video_info);
+
+            let effect_files: Vec<String> = media_file_paths
+                .into_iter()
+                .filter(|p| p.ends_with(".bak"))
+                .collect();
+
+            fs_extra::remove_items(&effect_files).unwrap();
         }
     } else {
         error!("Please specify the directory where the local cache files are located.");
