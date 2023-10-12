@@ -1,5 +1,5 @@
 use duct::cmd;
-use kael_logger::error;
+use kael_logger::{error, info};
 
 type VideoInfo = crate::VideoInfo;
 
@@ -15,6 +15,8 @@ pub fn merge(media_file_paths: &Vec<String>, output: &str, video_info: &VideoInf
     // merge files
     match cmd!(
         command,
+        "-v",
+        "quiet",
         "-i",
         input_aorv_file,
         "-i",
@@ -25,10 +27,12 @@ pub fn merge(media_file_paths: &Vec<String>, output: &str, video_info: &VideoInf
     )
     .run()
     {
-        Ok(_) => {}
+        Ok(_) => {
+            info!("File '{}.mp4' created successfully", video_info.title);
+        }
         Err(e) => {
             if e.kind() == std::io::ErrorKind::NotFound {
-                println!("{} command does not exist", command);
+                error!("{} command does not exist", command);
             } else {
                 error!("{}", e);
             }
