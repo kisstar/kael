@@ -15,7 +15,7 @@ macro_rules! compose {
         $f
     };
     ($f:expr, $($g:expr),+) => {
-        $crate::compose_chain($f, compose!($($g),+))
+        $crate::utils::compose_chain($f, compose!($($g),+))
     };
 }
 
