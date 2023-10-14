@@ -7,6 +7,7 @@ pub fn register(commander: Command) -> Command {
             // Merge the media files in the `INDIR` directory into MP4 files and output them to `OUTDIR`
             Command::new("merge")
                 .about("Merge the cache files of Bilibili official program")
+                .arg(arg!(-c --check "Check the dependencies of commands"))
                 .arg(arg!(-i --input <INPUT_DIR> "Directory where local cache files are located"))
                 .arg(arg!(-o --output <OUTPUT_DIR> "Storage directory for merged media files")),
         );

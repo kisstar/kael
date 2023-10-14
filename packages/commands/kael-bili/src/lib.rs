@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug)]
 pub struct Args<'a> {
+    pub check: Option<&'a bool>,
     pub input: Option<&'a String>,
     pub output: Option<&'a String>,
 }

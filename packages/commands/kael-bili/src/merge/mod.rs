@@ -1,5 +1,6 @@
 mod args;
 mod cmd;
+mod deps;
 mod dir;
 mod file;
 
@@ -10,11 +11,7 @@ use std::process;
 const VIDEO_INFO_FILENAME: &str = ".videoInfo";
 const MEDIA_FILENAME_SUFFIX: &str = ".m4s";
 
-pub fn run(args: crate::Args) {
-    let merge_args = args::parse(args).unwrap_or_else(|| {
-        error!("Please specify the directory where the local cache files are located.");
-        process::exit(1);
-    });
+fn merge_video(merge_args: args::MergeArgs) {
     let cache_dir_content = dir::get_dir_contents(merge_args.input).unwrap_or_else(|_| {
         error!("Failed to read directory {}.", merge_args.input);
         process::exit(1);
@@ -62,4 +59,18 @@ pub fn run(args: crate::Args) {
     }
 
     spinner.finish_with_message("All media files have been processed.");
+}
+
+pub fn run(args: crate::Args) {
+    let merge_args = args::parse(args).unwrap_or_else(|| {
+        error!("Please specify the directory where the local cache files are located.");
+        process::exit(1);
+    });
+
+    if *merge_args.check {
+        deps::check();
+        process::exit(0);
+    }
+
+    merge_video(merge_args);
 }

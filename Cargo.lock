@@ -208,6 +208,7 @@ dependencies = [
  "duct",
  "fs_extra",
  "indicatif",
+ "kael-helpers",
  "kael-logger",
  "serde",
  "serde_json",
