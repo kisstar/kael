@@ -8,4 +8,5 @@ edition = "2021"
 [dependencies]
 clap = { version = "4.4.6", features = ["cargo"] }
 kael-helpers = { path = "../../shared/kael-helpers" }
+kael-logger = { path = "../../shared/kael-logger" }
 kael-bili = { path = "../../commands/kael-bili" }
